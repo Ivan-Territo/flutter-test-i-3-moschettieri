@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-// Importa i tuoi file (assicurati che i nomi delle cartelle siano giusti)
+// Importa i tuoi file
 import '../services/api_service.dart';
+// NOTA: Se la classe dentro questo file si chiama 'Piatto', usa 'Piatto' invece di 'Dish' nel codice sotto
 import '../models/dish.dart';
-import '../widgets/special_dish_card.dart'; 
-import '../widgets/popular_dish_card.dart'; 
-import '../data/mock_data.dart'; 
+import '../widgets/special_dish_card.dart';
+// import '../widgets/popular_dish_card.dart'; // Se hai una card specifica per il menu popolare, scommentalo
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,19 +20,22 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFAFAFA), // Sfondo bianco sporco (moderno)
-      
-      // --- APP BAR (Intestazione) ---
+      backgroundColor: const Color(0xFFFAFAFA),
+
+      // --- APP BAR ---
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: const Row(
           children: [
-            Icon(Icons.eco, color: Color(0xFF5BA453)), // Il verde del logo
+            Icon(Icons.eco, color: Color(0xFF5BA453)),
             SizedBox(width: 8),
             Text(
               "Vegety",
-              style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ],
         ),
@@ -48,41 +51,35 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
 
-      // --- CORPO DELLA PAGINA ---
+      // --- CORPO ---
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            
-            // 1. Hero Section
             _buildHeroSection(),
             const SizedBox(height: 40),
 
-            // 2. Special Dish
-            _buildSpecialDishHeader(), 
-            _buildSpecialDishList(),   
+            // 2. Special Dish (ORA CON API)
+            _buildSpecialDishHeader(),
+            _buildSpecialDishList(), // <--- Modificato
             const SizedBox(height: 50),
 
-            // 3. Fresh Vegetables
-            _buildFreshVegetablesSection(), 
+            _buildFreshVegetablesSection(),
             const SizedBox(height: 50),
 
-            // 4. Popular Menu (API)
-            _buildPopularMenuHeader(), 
-            _buildPopularMenuApi(),    
+            // 4. Popular Menu (ORA CON API)
+            _buildPopularMenuHeader(),
+            _buildPopularMenuApi(), // <--- Modificato
             const SizedBox(height: 50),
 
-            // 5. Best Chefs
-            _buildBestChefsSection(),      
+            _buildBestChefsSection(),
             const SizedBox(height: 50),
 
-            // 6. Newsletter
-            _buildNewsletterBanner(),      
+            _buildNewsletterBanner(),
             const SizedBox(height: 40),
 
-            // 7. Footer
-            _buildFooter(),                
+            _buildFooter(),
           ],
         ),
       ),
@@ -90,7 +87,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   // ==========================================
-  //      TUTTI I METODI (WIDGET HELPER)
+  //      WIDGET HELPER
   // ==========================================
 
   Widget _buildHeroSection() {
@@ -103,7 +100,11 @@ class _HomePageState extends State<HomePage> {
             children: [
               const Text(
                 "Healthy food\nto live better",
-                style: TextStyle(fontSize: 28, fontWeight: FontWeight.w900, height: 1.1),
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w900,
+                  height: 1.1,
+                ),
               ),
               const SizedBox(height: 10),
               const Text(
@@ -115,11 +116,19 @@ class _HomePageState extends State<HomePage> {
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF2E3B28),
-                  padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 12),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 25,
+                    vertical: 12,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
                 ),
-                child: const Text("Get Started", style: TextStyle(color: Colors.white)),
-              )
+                child: const Text(
+                  "Get Started",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
             ],
           ),
         ),
@@ -128,9 +137,11 @@ class _HomePageState extends State<HomePage> {
           child: CircleAvatar(
             radius: 65,
             backgroundColor: Color(0xFFE8F5E9),
-            backgroundImage: NetworkImage("https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400"),
+            backgroundImage: NetworkImage(
+              "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400",
+            ),
           ),
-        )
+        ),
       ],
     );
   }
@@ -155,17 +166,53 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  // --- MODIFICATO: Usa l'API ---
   Widget _buildSpecialDishList() {
-    return SizedBox(
-      height: 260,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.only(left: 20, right: 10, bottom: 10),
-        itemCount: specialDishes.length, 
-        itemBuilder: (context, index) {
-          return SpecialDishCard(dish: specialDishes[index]);
-        },
-      ),
+    return FutureBuilder<List<Dish>>(
+      // Assicurati che 'Dish' sia il nome della classe nel file dish.dart
+      future: _apiService.getMenu(),
+      builder: (context, snapshot) {
+        // 1. Loading
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const SizedBox(
+            height: 260,
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        // 2. Error
+        if (snapshot.hasError) {
+          return const SizedBox(
+            height: 260,
+            child: Center(child: Text("Errore caricamento dati")),
+          );
+        }
+
+        // 3. Empty
+        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const SizedBox(
+            height: 260,
+            child: Center(child: Text("Nessun piatto speciale.")),
+          );
+        }
+
+        // 4. Data OK
+        final allDishes = snapshot.data!;
+        // Prendiamo ad esempio solo i primi 5 piatti per questa sezione
+        final specialDishes = allDishes.take(5).toList();
+
+        return SizedBox(
+          height: 260,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.only(left: 20, right: 10, bottom: 10),
+            itemCount: specialDishes.length,
+            itemBuilder: (context, index) {
+              return SpecialDishCard(dish: specialDishes[index]);
+            },
+          ),
+        );
+      },
     );
   }
 
@@ -178,7 +225,7 @@ class _HomePageState extends State<HomePage> {
             "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400",
             height: 200,
             fit: BoxFit.contain,
-            errorBuilder: (context, error, stack) => 
+            errorBuilder: (context, error, stack) =>
                 const Icon(Icons.eco, size: 80, color: Colors.green),
           ),
         ),
@@ -190,7 +237,11 @@ class _HomePageState extends State<HomePage> {
             children: [
               const Text(
                 "Fresh Vegetables\nEvery Day",
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, height: 1.2),
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  height: 1.2,
+                ),
               ),
               const SizedBox(height: 10),
               Text(
@@ -202,9 +253,14 @@ class _HomePageState extends State<HomePage> {
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF2E3B28),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
                 ),
-                child: const Text("Learn More", style: TextStyle(color: Colors.white)),
+                child: const Text(
+                  "Learn More",
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ],
           ),
@@ -222,7 +278,7 @@ class _HomePageState extends State<HomePage> {
           style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 5),
-        Text(
+        const Text(
           "Best selling dishes selected by you",
           style: TextStyle(color: Colors.grey, fontSize: 13),
         ),
@@ -230,39 +286,106 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  // --- MODIFICATO: Usa l'API ---
   Widget _buildPopularMenuApi() {
-    return FutureBuilder<List<Map<String, dynamic>>>(
+    // Nota: shrinkWrap: true e physics: NeverScrollableScrollPhysics() sono importanti
+    // perché questo ListView è dentro un Column che è dentro un SingleChildScrollView
+
+    return FutureBuilder<List<Dish>>(
       future: _apiService.getMenu(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: Padding(
-              padding: EdgeInsets.all(20.0),
-              child: CircularProgressIndicator(),
-            ),
-          );
+          return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
-          return Center(
-            child: Text(
-              "Errore di connessione: ${snapshot.error}",
-              style: const TextStyle(color: Colors.red),
-            ),
-          );
+          return const Text("Errore nel caricamento del menu");
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text("Nessun piatto disponibile al momento."));
+          return const Text("Menu vuoto");
         }
 
-        final List<Dish> menuItems = snapshot.data!.map((json) {
-          return Dish.fromJson(json);
-        }).toList();
+        final menu = snapshot.data!;
 
-        return ListView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          padding: EdgeInsets.zero,
-          itemCount: menuItems.length,
+        return ListView.separated(
+          shrinkWrap: true, // Importante per non rompere lo scroll della pagina
+          physics:
+              const NeverScrollableScrollPhysics(), // Disabilita lo scroll interno
+          itemCount: menu.length,
+          separatorBuilder: (context, index) => const SizedBox(height: 10),
           itemBuilder: (context, index) {
-            return PopularDishCard(dish: menuItems[index]);
+            final piatto = menu[index];
+
+            // Qui puoi usare PopularDishCard se l'hai creata, oppure un container custom
+            return Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(15),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withValues(alpha: 0.2),
+                    blurRadius: 10,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  // Immagine
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.network(
+                      piatto.urlImmagine,
+                      width: 70,
+                      height: 70,
+                      fit: BoxFit.cover,
+                      headers: const {
+                        'User-Agent':
+                            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36',
+                      },
+                      errorBuilder: (ctx, err, stack) => Container(
+                        width: 70,
+                        height: 70,
+                        color: Colors.grey[200],
+                        child: const Icon(Icons.fastfood),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 15),
+                  // Testi
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          piatto
+                              .piatto, // Assicurati che nel modello si chiami 'nome'
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          piatto.categoria,
+                          style: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Prezzo
+                  Text(
+                    "€${piatto.prezzo}",
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF5BA453),
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
+            );
           },
         );
       },
@@ -279,7 +402,11 @@ class _HomePageState extends State<HomePage> {
             children: [
               const Text(
                 "Cooked by the\nBest Chefs",
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, height: 1.2),
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  height: 1.2,
+                ),
               ),
               const SizedBox(height: 15),
               _buildCheckItem("A guaranteed delicious meal"),
@@ -294,7 +421,7 @@ class _HomePageState extends State<HomePage> {
             "https://images.unsplash.com/photo-1583394293214-28ded15ee548?w=400",
             height: 250,
             fit: BoxFit.contain,
-            errorBuilder: (context, error, stack) => 
+            errorBuilder: (context, error, stack) =>
                 const Icon(Icons.person, size: 100, color: Colors.grey),
           ),
         ),
@@ -311,7 +438,7 @@ class _HomePageState extends State<HomePage> {
           const SizedBox(width: 8),
           Expanded(
             child: Text(
-              text, 
+              text,
               style: TextStyle(color: Colors.grey[700], fontSize: 13),
             ),
           ),
@@ -328,7 +455,9 @@ class _HomePageState extends State<HomePage> {
         color: const Color(0xFF2E3B28),
         borderRadius: BorderRadius.circular(30),
         image: const DecorationImage(
-          image: NetworkImage("https://images.unsplash.com/photo-1466637574441-749b8f19452f?w=400"),
+          image: NetworkImage(
+            "https://images.unsplash.com/photo-1466637574441-749b8f19452f?w=400",
+          ),
           fit: BoxFit.cover,
           opacity: 0.1,
         ),
@@ -339,14 +468,14 @@ class _HomePageState extends State<HomePage> {
             "Join our member and\nget discount up to 50%",
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: Colors.white, 
-              fontSize: 20, 
+              color: Colors.white,
+              fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
           ),
           const SizedBox(height: 20),
           Container(
-            padding: const EdgeInsets.only(left: 20, right: 5, top: 5, bottom: 5),
+            padding: const EdgeInsets.all(5),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(30),
@@ -354,12 +483,14 @@ class _HomePageState extends State<HomePage> {
             child: Row(
               children: [
                 const Expanded(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: "Enter your email",
-                      hintStyle: TextStyle(fontSize: 13),
-                      border: InputBorder.none,
-                      isDense: true,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 15),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: "Enter your email",
+                        hintStyle: TextStyle(fontSize: 13),
+                        border: InputBorder.none,
+                      ),
                     ),
                   ),
                 ),
@@ -367,10 +498,21 @@ class _HomePageState extends State<HomePage> {
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF5BA453),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 10,
+                    ),
                   ),
-                  child: const Text("Sign In", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                  child: const Text(
+                    "Sign In",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -392,7 +534,10 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Icon(Icons.eco, color: Color(0xFF5BA453)),
                 SizedBox(width: 5),
-                Text("Vegety", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                Text(
+                  "Vegety",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                ),
               ],
             ),
             Row(
@@ -403,7 +548,7 @@ class _HomePageState extends State<HomePage> {
                 SizedBox(width: 15),
                 Icon(Icons.email, color: Colors.grey, size: 20),
               ],
-            )
+            ),
           ],
         ),
         const SizedBox(height: 20),

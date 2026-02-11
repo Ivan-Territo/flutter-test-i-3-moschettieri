@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import '../models/dish.dart';
 
 /// Servizio responsabile di tutte le chiamate di rete (HTTP).
 /// Utilizza il pacchetto [dio] che è molto potente per gestire le API.
@@ -33,18 +34,18 @@ class ApiService {
   }
 
   /// Recupera la lista di tutti i piatti del menu.
-  Future<List<Map<String, dynamic>>> getMenu() async {
+  Future<List<Dish>> getMenu() async {
     try {
       final response = await _dio.get('/Exam1');
-
       if (response.statusCode == 200) {
-        // L'API restituisce un array con un oggetto che contiene la chiave "menu"
         final List<dynamic> data = response.data;
         if (data.isNotEmpty && data[0]['menu'] != null) {
-          final List<dynamic> menu = data[0]['menu'];
-          return menu.cast<Map<String, dynamic>>();
+          final List<dynamic> menuRaw = data[0]['menu'];
+          return menuRaw
+              .cast<Map<String, dynamic>>() // Forza il tipo a Map
+              .map((json) => Dish.fromJson(json))
+              .toList();
         }
-        return [];
       }
       return [];
     } catch (e) {

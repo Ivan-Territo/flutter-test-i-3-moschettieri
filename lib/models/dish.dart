@@ -29,7 +29,7 @@ class Dish {
       ingredienti: List<String>.from(json['ingredienti'] ?? []),
       isVegan: json['is_vegan'] ?? false,
       disponibile: json['disponibile'] ?? true,
-      urlImmagine: json['url_immagine'] ?? 'https://via.placeholder.com/150',
+      urlImmagine: json['url_immagine'],
     );
   }
 }
