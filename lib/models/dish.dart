@@ -1,21 +1,35 @@
 class Dish {
-  // TODO: Aggiungi qui le variabili della classe
-  // Suggerimento: guarda la struttura JSON nel README.md
+  final int id;
+  final String piatto;        // Nome del piatto
+  final String categoria;
+  final double prezzo;
+  final List<String> ingredienti;
+  final bool isVegan;
+  final bool disponibile;
+  final String urlImmagine;
 
-  Dish() {
-    // TODO: Inizializza le variabili della classe usando i parametri del costruttore
-  }
+  Dish({
+    required this.id,
+    required this.piatto,
+    required this.categoria,
+    required this.prezzo,
+    required this.ingredienti,
+    required this.isVegan,
+    required this.disponibile,
+    required this.urlImmagine,
+  });
 
+  // Serve per trasformare i dati che arrivano da Internet (API)
   factory Dish.fromJson(Map<String, dynamic> json) {
     return Dish(
-      id: json['id'],
-      piatto: json['piatto'],
-      categoria: json['categoria'],
-      prezzo: json['prezzo'].toDouble(),
-      ingredienti: List<String>.from(json['ingredienti']),
-      isVegan: json['is_vegan'],
-      disponibile: json['disponibile'],
-      urlImmagine: json['url_immagine'],
+      id: int.tryParse(json['id'].toString()) ?? 0,
+      piatto: json['piatto'] ?? 'Nome sconosciuto',
+      categoria: json['categoria'] ?? 'Generico',
+      prezzo: double.tryParse(json['prezzo'].toString()) ?? 0.0,
+      ingredienti: List<String>.from(json['ingredienti'] ?? []),
+      isVegan: json['is_vegan'] ?? false,
+      disponibile: json['disponibile'] ?? true,
+      urlImmagine: json['url_immagine'] ?? 'https://via.placeholder.com/150',
     );
   }
 }
