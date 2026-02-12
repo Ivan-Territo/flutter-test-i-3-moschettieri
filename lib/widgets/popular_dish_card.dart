@@ -25,17 +25,15 @@ class PopularDishCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // IMMAGINE SUPERIORE (RETTANGOLARE)
           ClipRRect(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
             child: SizedBox(
               height: 140,
               width: double.infinity,
               child: Image.network(
-                "https://corsproxy.io/?" + dish.urlImmagine, // Aggiungi questo pezzo prima dell'URL
+                "https://corsproxy.io/?${dish.urlImmagine}",
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
-                  // Immagine di riserva diversa (rettangolare/generica)
                   return Image.network(
                     "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400",
                     fit: BoxFit.cover,

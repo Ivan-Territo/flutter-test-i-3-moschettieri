@@ -3,7 +3,6 @@ import '../services/api_service.dart';
 import '../models/dish.dart';
 import '../widgets/special_dish_card.dart'; 
 import '../widgets/popular_dish_card.dart'; 
-
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -30,14 +29,12 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         titleSpacing: 20,
-        // Logo e Titolo a sinistra
         title: Row(
           children: [
-            // Icona foglia (simile al logo)
             Container(
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
-                color: const Color(0xFF5BA453), // Colore verde del logo
+                color: const Color(0xFF5BA453),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: const Icon(Icons.eco, color: Colors.white, size: 20),
@@ -53,31 +50,26 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
-        // Azioni a destra
         actions: [
-          // Lente d'ingrandimento
           IconButton(
             icon: const Icon(Icons.search, color: Colors.black87, size: 24),
             onPressed: () {},
           ),
-          // Carrello
           IconButton(
             icon: const Icon(Icons.shopping_cart_outlined, color: Colors.black87, size: 24),
             onPressed: () {},
           ),
-          // Menu Hamburger (le 3 linee)
           IconButton(
             icon: const Icon(Icons.menu, color: Colors.black87, size: 24),
             onPressed: () {},
           ),
           const SizedBox(width: 10),
-          // Bottone "Booking Now"
           Padding(
             padding: const EdgeInsets.only(right: 20),
             child: ElevatedButton(
               onPressed: () {},
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF5BA453), // Verde bottone
+                backgroundColor: const Color(0xFF5BA453),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
@@ -101,8 +93,6 @@ class _HomePageState extends State<HomePage> {
         physics: const BouncingScrollPhysics(),
         child: Column(
           children: [
-            
-            // 1. HERO SECTION
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Row(
@@ -145,13 +135,11 @@ class _HomePageState extends State<HomePage> {
 
             const SizedBox(height: 40),
 
-            // 2. SPECIAL DISH
             const Center(child: Text("Our Special Dish", style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Color(0xFF2E3B28)))),
             const SizedBox(height: 5),
             const Center(child: Text("Made with premium ingredients", style: TextStyle(color: Colors.grey, fontSize: 13))),
             const SizedBox(height: 30),
 
-            // API BUILDER
             FutureBuilder<List<Dish>>(
               future: _menuFuture,
               builder: (context, snapshot) {
@@ -162,19 +150,11 @@ class _HomePageState extends State<HomePage> {
                 }
 
                 final allDishes = snapshot.data!;
-                
-                // Prendi i primi 3 per la Special
                 final specialList = allDishes.take(3).toList();
-                
-                // Salti i primi 3 e ne prendi altri 3 per la Popular
                 final popularList = allDishes.skip(3).take(3).toList();
 
                 return Column(
                   children: [
-                    
-                    // --- LISTA SPECIAL DISH (CENTRATA) ---
-                    // Usiamo Center + SingleChildScrollView + Row(MainAxisAlignment.center)
-                    // Questo assicura che se sono pochi stiano al centro, se sono tanti scrollano.
                     Center(
                       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
@@ -192,7 +172,6 @@ class _HomePageState extends State<HomePage> {
 
                     const SizedBox(height: 60),
 
-                    // 3. FRESH VEGETABLES
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Row(
@@ -226,14 +205,11 @@ class _HomePageState extends State<HomePage> {
                     ),
 
                     const SizedBox(height: 60),
-
-                    // 4. POPULAR MENU (Solo 3 elementi)
                     const Center(child: Text("Our Popular Menu", style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Color(0xFF2E3B28)))),
                     const SizedBox(height: 5),
                     const Center(child: Text("Made with premium ingredients", style: TextStyle(color: Colors.grey, fontSize: 13))),
                     const SizedBox(height: 30),
 
-                    // LISTA POPULAR (CENTRATA ANCHE QUESTA)
                     Center(
                       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
@@ -254,8 +230,7 @@ class _HomePageState extends State<HomePage> {
             ),
 
             const SizedBox(height: 30),
-            
-            // Bottone "Load more"
+
             Center(
               child: ElevatedButton.icon(
                 onPressed: (){}, 
@@ -267,7 +242,6 @@ class _HomePageState extends State<HomePage> {
 
             const SizedBox(height: 60),
 
-            // 5. BEST CHEFS
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
@@ -291,11 +265,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
 
-            // SEZIONE CUSTOMER ELIMINATA
-
             const SizedBox(height: 60),
-
-            // 6. NEWSLETTER
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 20),
               padding: const EdgeInsets.all(30),
@@ -328,8 +298,6 @@ class _HomePageState extends State<HomePage> {
             ),
 
             const SizedBox(height: 50),
-
-            // 7. FOOTER
             const Center(child: Text("© 2026 Vegety. All rights reserved.", style: TextStyle(color: Colors.grey, fontSize: 12))),
             const SizedBox(height: 20),
           ],

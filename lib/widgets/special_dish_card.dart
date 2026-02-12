@@ -26,14 +26,13 @@ class SpecialDishCard extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // IMMAGINE ROTONDA
           Container(
             width: 90,
             height: 90,
             decoration: const BoxDecoration(shape: BoxShape.circle),
             child: ClipOval(
               child: Image.network(
-                "https://corsproxy.io/?" + dish.urlImmagine,
+                "https://corsproxy.io/?${dish.urlImmagine}",
                 errorBuilder: (context, error, stackTrace) {
                   return Image.network(
                     "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200",
@@ -45,8 +44,6 @@ class SpecialDishCard extends StatelessWidget {
           ),
 
           const SizedBox(height: 15),
-
-          // NOME PIATTO
           Text(
             dish.piatto,
             textAlign: TextAlign.center,
@@ -56,16 +53,13 @@ class SpecialDishCard extends StatelessWidget {
           ),
 
           const SizedBox(height: 5),
-
-          // CATEGORIA
           Text(
             dish.categoria,
             style: TextStyle(color: Colors.grey[400], fontSize: 12),
           ),
 
           const SizedBox(height: 10),
-
-          // PREZZO
+          
           Text(
             "€ ${dish.prezzo.toStringAsFixed(2)}",
             style: const TextStyle(
