@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import '../models/dish.dart';
 
 class ApiService {
-  // Sostituisci con il tuo URL corretto se diverso
   static const String _baseUrl = 'https://69846b7e885008c00db120c3.mockapi.io/api/v1';
   final Dio _dio = Dio(BaseOptions(baseUrl: _baseUrl));
 
@@ -28,5 +27,5 @@ class ApiService {
       debugPrint('Errore API: $e');
       return [];
     }
-  }
+  } 
 }

@@ -161,7 +161,7 @@ class _HomePageState extends State<HomePage> {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center, // CENTRATURA
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: specialList.map((dish) {
                               return SpecialDishCard(dish: dish);
                             }).toList(),
@@ -216,7 +216,7 @@ class _HomePageState extends State<HomePage> {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center, // CENTRATURA
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: popularList.map((dish) {
                               return PopularDishCard(dish: dish);
                             }).toList(),

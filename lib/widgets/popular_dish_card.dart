@@ -16,7 +16,7 @@ class PopularDishCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.08), 
+            color: Colors.grey.withValues(alpha: 0.08), 
             blurRadius: 10, 
             offset: const Offset(0, 4)
           ),
@@ -88,7 +88,7 @@ class PopularDishCard extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF5BA453).withOpacity(0.1), 
+                        color: const Color(0xFF5BA453).withValues(alpha: 0.1), 
                         shape: BoxShape.circle
                       ),
                       child: const Icon(Icons.add, color: Color(0xFF5BA453), size: 20),
