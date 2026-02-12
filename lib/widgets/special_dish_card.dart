@@ -33,11 +33,8 @@ class SpecialDishCard extends StatelessWidget {
             decoration: const BoxDecoration(shape: BoxShape.circle),
             child: ClipOval(
               child: Image.network(
-                dish.urlImmagine,
-                fit: BoxFit.cover,
-                // RIMOSSO GLI HEADERS CHE CAUSAVANO L'ERRORE SU WEB
+                "https://corsproxy.io/?" + dish.urlImmagine,
                 errorBuilder: (context, error, stackTrace) {
-                  // Se l'immagine originale è bloccata dal CORS, carica questa:
                   return Image.network(
                     "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200",
                     fit: BoxFit.cover,
