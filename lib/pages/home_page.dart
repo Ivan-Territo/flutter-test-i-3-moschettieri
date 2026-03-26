@@ -91,7 +91,7 @@ class _HomePageState extends State<HomePage> {
 
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        child: Column(
+         child: Column(
           children: [
             Padding(
               padding: const EdgeInsets.all(20.0),
